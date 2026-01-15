@@ -51,3 +51,6 @@
 - A demonstration of clean Flutter architecture and UI/UX discipline
 
 #### ScolioFit does not replace medical treatment and is intended for educational and supportive exercise guidance only.
+
+## Developer
+### Rümeysa Gökçe
