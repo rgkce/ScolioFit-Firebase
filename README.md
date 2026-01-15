@@ -52,5 +52,4 @@
 
 #### ScolioFit does not replace medical treatment and is intended for educational and supportive exercise guidance only.
 
-## Developer
-### Rümeysa Gökçe
+### Developer - Rümeysa Gökçe
