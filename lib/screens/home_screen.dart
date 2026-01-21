@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/exercise_service.dart';
+import '../providers/exercise_provider.dart';
 import '../core/constants/app_strings.dart';
 import 'tabs/daily_routine_tab.dart';
 import 'tabs/exercise_list_tab.dart';
@@ -28,9 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ExerciseService>().fetchDailyRoutine();
-      context.read<ExerciseService>().fetchExercises();
-      context.read<ExerciseService>().fetchFavorites();
+      // These are now largely handled by ExerciseProvider's updateUserId
+      // but we can still trigger a fetch if needed
+      context.read<ExerciseProvider>().fetchDailyRoutine();
     });
   }
 

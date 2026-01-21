@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/exercise.dart';
-import '../services/exercise_service.dart';
+import '../providers/exercise_provider.dart';
 import '../core/constants/app_strings.dart';
 import 'exercise_timer_screen.dart';
 
@@ -43,6 +43,8 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lang = Localizations.localeOf(context).languageCode;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -53,10 +55,10 @@ class ExerciseDetailScreen extends StatelessWidget {
               background: _buildImage(exercise.imageUrl, fit: BoxFit.contain),
             ),
             actions: [
-              Consumer<ExerciseService>(
-                builder: (context, service, _) {
+              Consumer<ExerciseProvider>(
+                builder: (context, provider, _) {
                   final currentExercise =
-                      service.getExerciseById(exercise.id) ?? exercise;
+                      provider.getExerciseById(exercise.id) ?? exercise;
                   final isFav = currentExercise.isFavorite;
 
                   return IconButton(
@@ -64,7 +66,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                       isFav ? Icons.favorite : Icons.favorite_border,
                       color: isFav ? Colors.red : Colors.white,
                     ),
-                    onPressed: () => service.toggleFavorite(exercise.id),
+                    onPressed: () => provider.toggleFavorite(exercise.id),
                   );
                 },
               ),
@@ -81,7 +83,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          exercise.name,
+                          exercise.title(lang),
                           style: Theme.of(context).textTheme.headlineMedium
                               ?.copyWith(fontWeight: FontWeight.bold),
                         ),
@@ -98,7 +100,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          exercise.difficulty,
+                          exercise.difficulty(lang),
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
@@ -109,8 +111,17 @@ class ExerciseDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    exercise.category,
+                    exercise.category(lang),
                     style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    exercise.description(lang),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      height: 1.5,
+                      color: Colors.grey,
+                    ),
                   ),
                   const SizedBox(height: 24),
                   Row(
@@ -118,13 +129,13 @@ class ExerciseDetailScreen extends StatelessWidget {
                       _buildInfoTile(
                         context,
                         Icons.timer_outlined,
-                        exercise.duration,
+                        exercise.formattedDuration,
                       ),
                       const SizedBox(width: 24),
                       _buildInfoTile(
                         context,
                         Icons.fitness_center,
-                        '${exercise.muscleGroups.length} ${AppStrings.get(context, 'muscle_groups')}',
+                        '${exercise.muscleGroups(lang).length} ${AppStrings.get(context, 'muscle_groups')}',
                       ),
                     ],
                   ),
@@ -165,7 +176,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      step.title,
+                                      step.title(lang),
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -173,7 +184,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      step.instruction,
+                                      step.instruction(lang),
                                       style: const TextStyle(
                                         fontSize: 15,
                                         height: 1.4,
@@ -203,7 +214,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                       ),
                     );
                   }).toList(),
-                  if (exercise.safetyTips.isNotEmpty) ...[
+                  if (exercise.safetyTips(lang).isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.all(16),
@@ -235,7 +246,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  exercise.safetyTips,
+                                  exercise.safetyTips(lang),
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ],
@@ -257,7 +268,8 @@ class ExerciseDetailScreen extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 8,
                     children:
-                        exercise.muscleGroups
+                        exercise
+                            .muscleGroups(lang)
                             .map(
                               (muscle) => Chip(
                                 label: Text(muscle),

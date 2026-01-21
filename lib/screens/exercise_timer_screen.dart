@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/exercise.dart';
+import '../providers/exercise_provider.dart';
 import '../core/constants/app_strings.dart';
 
 class ExerciseTimerScreen extends StatefulWidget {
@@ -21,20 +23,9 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   @override
   void initState() {
     super.initState();
-    _totalSeconds = _parseDuration(widget.exercise.duration);
+    _totalSeconds = widget.exercise.duration;
     _remainingSeconds = _totalSeconds;
     _startTimer();
-  }
-
-  int _parseDuration(String duration) {
-    // Basic parser for "X min" or "X sec"
-    final parts = duration.toLowerCase().split(' ');
-    if (parts.length >= 2) {
-      final value = int.tryParse(parts[0]) ?? 0;
-      if (parts[1].contains('min')) return value * 60;
-      if (parts[1].contains('sec')) return value;
-    }
-    return 60; // Default 1 min
   }
 
   void _startTimer() {
@@ -62,6 +53,8 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   }
 
   void _onFinished() {
+    context.read<ExerciseProvider>().logCompletion(widget.exercise.id);
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -69,7 +62,7 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
           (context) => AlertDialog(
             title: Text(AppStrings.get(context, 'finished_title')),
             content: Text(
-              '${AppStrings.get(context, 'finished_message')} (${widget.exercise.name})',
+              '${AppStrings.get(context, 'finished_message')} (${widget.exercise.title(Localizations.localeOf(context).languageCode)})',
             ),
             actions: [
               TextButton(
@@ -103,7 +96,9 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: Text(widget.exercise.name),
+        title: Text(
+          widget.exercise.title(Localizations.localeOf(context).languageCode),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         foregroundColor: Colors.white,

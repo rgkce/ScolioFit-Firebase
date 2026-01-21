@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/auth_service.dart';
+import '../../providers/auth_provider.dart';
 import '../../core/constants/app_strings.dart';
 import '../home_screen.dart';
 import '../privacy_policy_screen.dart';
@@ -21,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = context.watch<AuthService>();
+    final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -170,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed:
-                      (authService.isLoading || !_isPrivacyPolicyAccepted)
+                      (authProvider.isLoading || !_isPrivacyPolicyAccepted)
                           ? null
                           : () async {
                             final email = _emailController.text.trim();
@@ -188,12 +188,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return;
                             }
 
-                            final success = await authService.register(
+                            final error = await authProvider.register(
                               email,
                               password,
                               fullName,
                             );
-                            if (success && mounted) {
+                            if (error == null && mounted) {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (_) => const HomeScreen(),
@@ -203,17 +203,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    AppStrings.get(
-                                      context,
-                                      'registration_failed',
-                                    ),
+                                    error ??
+                                        AppStrings.get(
+                                          context,
+                                          'registration_failed',
+                                        ),
                                   ),
                                 ),
                               );
                             }
                           },
                   child:
-                      authService.isLoading
+                      authProvider.isLoading
                           ? const SizedBox(
                             height: 20,
                             width: 20,
