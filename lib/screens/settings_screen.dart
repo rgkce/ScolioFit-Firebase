@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../services/theme_service.dart';
-import '../services/language_service.dart';
+import '../providers/theme_provider.dart';
+import '../providers/language_provider.dart';
 import '../core/constants/app_strings.dart';
 import 'auth/change_password_screen.dart';
 import 'auth/login_screen.dart';
-import '../services/auth_service.dart';
+import '../providers/auth_provider.dart';
 import 'health_disclaimer_screen.dart';
 import 'privacy_policy_screen.dart';
 
@@ -31,14 +31,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: Radio<String>(
                     value: 'tr',
                     groupValue:
-                        context.read<LanguageService>().locale.languageCode,
+                        context.read<LanguageProvider>().locale.languageCode,
                     onChanged: (val) {
-                      context.read<LanguageService>().setLanguage(val!);
+                      context.read<LanguageProvider>().setLanguage(val!);
                       Navigator.pop(context);
                     },
                   ),
                   onTap: () {
-                    context.read<LanguageService>().setLanguage('tr');
+                    context.read<LanguageProvider>().setLanguage('tr');
                     Navigator.pop(context);
                   },
                 ),
@@ -47,14 +47,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: Radio<String>(
                     value: 'en',
                     groupValue:
-                        context.read<LanguageService>().locale.languageCode,
+                        context.read<LanguageProvider>().locale.languageCode,
                     onChanged: (val) {
-                      context.read<LanguageService>().setLanguage(val!);
+                      context.read<LanguageProvider>().setLanguage(val!);
                       Navigator.pop(context);
                     },
                   ),
                   onTap: () {
-                    context.read<LanguageService>().setLanguage('en');
+                    context.read<LanguageProvider>().setLanguage('en');
                     Navigator.pop(context);
                   },
                 ),
@@ -85,27 +85,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () async {
-                  final success =
-                      await context.read<AuthService>().deleteAccount();
+                  await context.read<AuthProvider>().logout();
                   if (mounted) {
                     Navigator.pop(context); // Close dialog
-                    if (success) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                        (route) => false,
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Account deleted successfully.'),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Failed to delete account.'),
-                        ),
-                      );
-                    }
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                      (route) => false,
+                    );
                   }
                 },
                 child: Text(AppStrings.get(context, 'ok')),
@@ -117,10 +103,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final themeService = context.watch<ThemeService>();
+    final themeProvider = context.watch<ThemeProvider>();
     final isDark =
-        themeService.themeMode == ThemeMode.dark ||
-        (themeService.themeMode == ThemeMode.system &&
+        themeProvider.themeMode == ThemeMode.dark ||
+        (themeProvider.themeMode == ThemeMode.system &&
             MediaQuery.of(context).platformBrightness == Brightness.dark);
 
     return Scaffold(
@@ -166,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: Text(AppStrings.get(context, 'enable_dark_theme')),
             value: isDark,
             onChanged: (val) {
-              themeService.toggleTheme(val);
+              themeProvider.toggleTheme(val);
             },
             secondary: const Icon(Icons.dark_mode_outlined),
           ),

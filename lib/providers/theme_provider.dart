@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeService extends ChangeNotifier {
-  static final ThemeService _instance = ThemeService._internal();
-  factory ThemeService() => _instance;
-  ThemeService._internal();
+class ThemeProvider extends ChangeNotifier {
+  static final ThemeProvider _instance = ThemeProvider._internal();
+  factory ThemeProvider() => _instance;
+  ThemeProvider._internal();
 
   late SharedPreferences _prefs;
   ThemeMode _themeMode = ThemeMode.system;
