@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/exercise_provider.dart';
+import '../../services/exercise_service.dart';
 import '../../core/constants/app_strings.dart';
 import '../exercise_detail_screen.dart';
 import '../../widgets/exercise_card.dart';
@@ -10,11 +10,11 @@ class FavoritesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = context.watch<ExerciseProvider>();
+    final exerciseService = context.watch<ExerciseService>();
 
     return Scaffold(
       body:
-          exerciseProvider.favorites.isEmpty
+          exerciseService.favorites.isEmpty
               ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -34,9 +34,9 @@ class FavoritesTab extends StatelessWidget {
               )
               : ListView.builder(
                 padding: const EdgeInsets.all(24),
-                itemCount: exerciseProvider.favorites.length,
+                itemCount: exerciseService.favorites.length,
                 itemBuilder: (context, index) {
-                  final exercise = exerciseProvider.favorites[index];
+                  final exercise = exerciseService.favorites[index];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: ExerciseCard(

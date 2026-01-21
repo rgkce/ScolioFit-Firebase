@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../../core/constants/app_strings.dart';
 import '../settings_screen.dart';
 import '../auth/login_screen.dart';
@@ -12,8 +12,8 @@ class ProfileTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
-    final user = authProvider.user;
+    final authService = context.watch<AuthService>();
+    final user = authService.user;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -84,7 +84,7 @@ class ProfileTab extends StatelessWidget {
                             TextButton(
                               onPressed: () async {
                                 Navigator.pop(context); // Close dialog
-                                await authProvider.logout();
+                                await authService.logout();
                                 if (context.mounted) {
                                   Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(

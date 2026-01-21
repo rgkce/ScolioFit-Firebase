@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LanguageProvider extends ChangeNotifier {
-  static final LanguageProvider _instance = LanguageProvider._internal();
-  factory LanguageProvider() => _instance;
-  LanguageProvider._internal();
+class LanguageService extends ChangeNotifier {
+  static final LanguageService _instance = LanguageService._internal();
+  factory LanguageService() => _instance;
+  LanguageService._internal();
 
   late SharedPreferences _prefs;
   Locale _locale = const Locale('tr'); // Default to Turkish

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../../core/constants/app_strings.dart';
 import 'register_screen.dart';
 import '../home_screen.dart';
@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    final authService = context.watch<AuthService>();
 
     return Scaffold(
       appBar: AppBar(title: Text(AppStrings.get(context, 'login'))),
@@ -90,14 +90,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed:
-                      authProvider.isLoading
+                      authService.isLoading
                           ? null
                           : () async {
-                            final error = await authProvider.login(
+                            final success = await authService.login(
                               _emailController.text,
                               _passwordController.text,
                             );
-                            if (error == null && mounted) {
+                            if (success && mounted) {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                   builder: (_) => const HomeScreen(),
@@ -107,15 +107,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    error ??
-                                        AppStrings.get(context, 'login_failed'),
+                                    AppStrings.get(context, 'login_failed'),
                                   ),
                                 ),
                               );
                             }
                           },
                   child:
-                      authProvider.isLoading
+                      authService.isLoading
                           ? const SizedBox(
                             height: 20,
                             width: 20,

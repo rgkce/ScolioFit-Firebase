@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/exercise.dart';
-import '../providers/exercise_provider.dart';
+import '../services/exercise_service.dart';
 
 class ExerciseCard extends StatelessWidget {
   final Exercise exercise;
@@ -72,9 +72,7 @@ class ExerciseCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    exercise.title(
-                      Localizations.localeOf(context).languageCode,
-                    ),
+                    exercise.name,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -82,7 +80,7 @@ class ExerciseCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${exercise.formattedDuration} • ${exercise.difficulty(Localizations.localeOf(context).languageCode)}',
+                    '${exercise.duration} • ${exercise.difficulty}',
                     style: TextStyle(color: Colors.grey[600], fontSize: 13),
                   ),
                 ],
@@ -95,7 +93,7 @@ class ExerciseCard extends StatelessWidget {
                 size: 24,
               ),
               onPressed: () {
-                context.read<ExerciseProvider>().toggleFavorite(exercise.id);
+                context.read<ExerciseService>().toggleFavorite(exercise.id);
               },
             ),
           ],

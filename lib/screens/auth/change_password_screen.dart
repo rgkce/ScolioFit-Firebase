@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/auth_provider.dart';
+import '../../services/auth_service.dart';
 import '../../core/constants/app_strings.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = context.watch<AuthProvider>();
+    final authService = context.watch<AuthService>();
 
     return Scaffold(
       appBar: AppBar(
@@ -132,7 +132,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed:
-                      authProvider.isLoading
+                      authService.isLoading
                           ? null
                           : () async {
                             if (_newPasswordController.text !=
@@ -151,13 +151,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               return;
                             }
 
-                            final error = await authProvider.changePassword(
+                            final success = await authService.changePassword(
                               _oldPasswordController.text,
                               _newPasswordController.text,
                             );
 
                             if (mounted) {
-                              if (error == null) {
+                              if (success) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -173,7 +173,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(error),
+                                    content: Text(
+                                      AppStrings.get(
+                                        context,
+                                        'password_change_failed',
+                                      ),
+                                    ),
                                     backgroundColor: Colors.red,
                                   ),
                                 );
@@ -181,7 +186,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             }
                           },
                   child:
-                      authProvider.isLoading
+                      authService.isLoading
                           ? const SizedBox(
                             height: 20,
                             width: 20,

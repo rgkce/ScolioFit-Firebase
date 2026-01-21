@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../providers/exercise_provider.dart';
+import '../../services/exercise_service.dart';
 import '../category_exercises_screen.dart';
 
 class ExerciseListTab extends StatelessWidget {
@@ -8,14 +8,11 @@ class ExerciseListTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = context.watch<ExerciseProvider>();
-    final categories = exerciseProvider.getCategories(
-      Localizations.localeOf(context).languageCode,
-    );
+    final exerciseService = context.watch<ExerciseService>();
 
     return Scaffold(
       body:
-          exerciseProvider.isLoading
+          exerciseService.isLoading
               ? const Center(child: CircularProgressIndicator())
               : GridView.builder(
                 padding: const EdgeInsets.all(24),
@@ -25,9 +22,9 @@ class ExerciseListTab extends StatelessWidget {
                   mainAxisSpacing: 16,
                   childAspectRatio: 1.1,
                 ),
-                itemCount: categories.length,
+                itemCount: exerciseService.categories.length,
                 itemBuilder: (context, index) {
-                  final category = categories[index];
+                  final category = exerciseService.categories[index];
                   return GestureDetector(
                     onTap:
                         () => Navigator.of(context).push(

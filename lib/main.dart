@@ -1,61 +1,44 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
-import 'providers/auth_provider.dart';
-import 'providers/exercise_provider.dart';
-import 'providers/theme_provider.dart';
-import 'providers/language_provider.dart';
-import 'services/firebase_auth_service.dart';
-
+import 'services/auth_service.dart';
+import 'services/exercise_service.dart';
+import 'services/theme_service.dart';
+import 'services/api_service.dart';
+import 'services/language_service.dart';
 import 'screens/splash_screen.dart';
 import 'screens/health_disclaimer_screen.dart';
-import 'firebase_options.dart';
 
 void main() async {
   // 1. Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 2. Initialize Firebase
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    debugPrint('Firebase initialization error: $e');
-  }
-
-  // 3. Initialize SharedPreferences
+  // 2. Initialize SharedPreferences ONCE
   final prefs = await SharedPreferences.getInstance();
 
-  // 4. Initialize Providers
-  final themeProvider = ThemeProvider();
-  await themeProvider.init(prefs);
+  // 3. Initialize Services with the shared prefs
+  final themeService = ThemeService();
+  await themeService.init(prefs);
 
-  final languageProvider = LanguageProvider();
-  await languageProvider.init(prefs);
+  final apiService = ApiService();
+  await apiService.init(prefs);
 
-  // Initialize FirebaseAuthService
-  final firebaseAuthService = FirebaseAuthService(); // Added initialization
+  final languageService = LanguageService();
+  await languageService.init(prefs);
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: themeProvider),
-        ChangeNotifierProvider.value(value: languageProvider),
-        ChangeNotifierProvider(create: (_) => firebaseAuthService), // Added
-        ChangeNotifierProvider(
-          create:
-              (context) =>
-                  AuthProvider(context.read<FirebaseAuthService>()), // Modified
-        ),
-        ChangeNotifierProxyProvider<AuthProvider, ExerciseProvider>(
-          create: (context) => ExerciseProvider(),
-          update: (context, auth, exercise) {
-            final svc = exercise ?? ExerciseProvider();
-            svc.updateUserId(auth.user?.uid);
+        ChangeNotifierProvider.value(value: themeService),
+        ChangeNotifierProvider.value(value: languageService),
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProxyProvider<LanguageService, ExerciseService>(
+          create: (context) => ExerciseService(),
+          update: (context, lang, exercise) {
+            final svc = exercise ?? ExerciseService();
+            svc.updateLocale(lang.locale.languageCode);
             return svc;
           },
         ),
@@ -70,16 +53,16 @@ class ScolioFitApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-    final languageProvider = context.watch<LanguageProvider>();
+    final themeService = context.watch<ThemeService>();
+    final languageService = context.watch<LanguageService>();
 
     return MaterialApp(
       title: 'ScolioFit',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: themeProvider.themeMode,
-      locale: languageProvider.locale,
+      themeMode: themeService.themeMode,
+      locale: languageService.locale,
       supportedLocales: const [Locale('en'), Locale('tr')],
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,

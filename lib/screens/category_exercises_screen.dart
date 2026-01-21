@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/exercise_provider.dart';
+import '../services/exercise_service.dart';
 import '../models/category.dart';
 import '../widgets/exercise_card.dart';
 import 'exercise_detail_screen.dart';
@@ -12,14 +12,14 @@ class CategoryExercisesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseProvider = context.watch<ExerciseProvider>();
-    final exercises = exerciseProvider.getExercisesByCategory(category.id);
+    final exerciseService = context.watch<ExerciseService>();
+    final exercises = exerciseService.getExercisesByCategory(category.name);
 
     return Scaffold(
       appBar: AppBar(title: Text(category.name)),
       body:
           exercises.isEmpty
-              ? const Center(child: Text('No exercises found'))
+              ? const Center(child: Text('No exercises found in this category'))
               : ListView.builder(
                 padding: const EdgeInsets.all(24),
                 itemCount: exercises.length,

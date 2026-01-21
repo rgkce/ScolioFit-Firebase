@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../services/auth_service.dart';
 import '../core/constants/app_strings.dart';
 import 'auth/login_screen.dart';
 import 'home_screen.dart';
@@ -134,8 +134,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   void _completeOnboarding() {
-    final authProvider = context.read<AuthProvider>();
-    if (authProvider.isAuthenticated) {
+    final authService = context.read<AuthService>();
+    if (authService.isAuthenticated) {
       Navigator.of(
         context,
       ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));

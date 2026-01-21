@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+import '../services/api_service.dart';
+import '../services/auth_service.dart';
 import 'auth/login_screen.dart';
 import 'home_screen.dart';
 import 'onboarding_screen.dart';
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    final authProvider = context.read<AuthProvider>();
+    final apiService = ApiService();
     final prefs = await SharedPreferences.getInstance();
     final bool showOnboarding = prefs.getBool('showOnboarding') ?? true;
 
@@ -47,7 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const OnboardingScreen()),
       );
-    } else if (authProvider.isAuthenticated) {
+    } else if (apiService.isAuthenticated) {
+      // Fetch user profile before navigating
+      await context.read<AuthService>().fetchProfile();
+
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
