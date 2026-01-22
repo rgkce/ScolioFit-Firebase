@@ -60,13 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: Text(_getTitle()),
           automaticallyImplyLeading: false,
-          actions: [
-            if (_selectedIndex == 0)
-              IconButton(
-                icon: const Icon(Icons.notifications_none),
-                onPressed: () {},
-              ),
-          ],
         ),
         body: IndexedStack(index: _selectedIndex, children: _tabs),
         bottomNavigationBar: Container(

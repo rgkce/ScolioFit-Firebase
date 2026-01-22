@@ -51,14 +51,7 @@ void main() async {
               (context) =>
                   AuthProvider(context.read<FirebaseAuthService>()), // Modified
         ),
-        ChangeNotifierProxyProvider<AuthProvider, ExerciseProvider>(
-          create: (context) => ExerciseProvider(),
-          update: (context, auth, exercise) {
-            final svc = exercise ?? ExerciseProvider();
-            svc.updateUserId(auth.user?.uid);
-            return svc;
-          },
-        ),
+        ChangeNotifierProvider(create: (context) => ExerciseProvider()),
       ],
       child: const ScolioFitApp(),
     ),
