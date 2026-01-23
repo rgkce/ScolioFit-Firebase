@@ -88,8 +88,7 @@ class ExerciseData {
             'tr':
                 'Matının üzerine diz çök. Ayak baş parmakların birbirine değsin ama topukların açık kalsın. Topuklarının üzerine rahatça otur.',
           },
-          imageUrl:
-              'https://images.unsplash.com/photo-1510894347713-fc3ad6cb0d0d?q=80&w=400',
+          imageUrl: 'assets/exercises/diz-ustu-oturus.png',
         ),
         ExerciseStep(
           titles: {'en': 'Fold Forward', 'tr': 'Öne Katlanma'},
@@ -97,7 +96,7 @@ class ExerciseData {
             'en':
                 'Separate your knees, lay your torso down between your thighs. Rest your forehead on the floor.',
             'tr':
-                'Dizlerini hafifçe yanlara aç. Nefes verirken gövdeni bacaklarının arasına doğru yavaşça indir. Alnını yere koy ve kollarını ileriye doğru uzunca uzat.',
+                'Ayakta dik dur. Ellerini arkada birleştir, kolları geriye doğru uzat.',
           },
         ),
       ],
@@ -124,18 +123,19 @@ class ExerciseData {
           titles: {'en': 'Position Arms', 'tr': 'Kolları Yerleştir'},
           instructions: {
             'en':
-                'Stand in a doorway. Raise your arms in a "U" shape and place forearms on the doorframe.',
+                'Stand upright. Clasp hands behind the back and extend arms backward.',
             'tr':
                 'Bir kapı eşiğinde dur. Kollarını "U" harfi yapacak şekilde kaldır ve ön kollarını kapı çerçevesine yasla. Dirseklerin omuz hizasında olsun.',
           },
         ),
         ExerciseStep(
-          titles: {'en': 'Lean Forward', 'tr': 'Adım At ve Esne'},
+          titles: {
+            'en': 'Open the chest and relaxed',
+            'tr': 'Göğsü aç ve Esne',
+          },
           instructions: {
-            'en':
-                'Step forward with one foot. Slowly lean your body weight forward until you feel a stretch.',
-            'tr':
-                'Bir ayağınla öne doğru küçük bir adım at. Göğsünde ve omuzlarında nazik bir gerilme hissedene kadar vücut ağırlığını yavaşça öne ver.',
+            'en': 'Open the chest, keep shoulders relaxed. Hold for 5 seconds.',
+            'tr': 'Göğsü aç, omuzları aşağıda tut. 5 sn tut.',
           },
         ),
       ],
@@ -202,6 +202,7 @@ class ExerciseData {
             'tr':
                 'Dört ayak pozisyonunda başla. Ellerini omuzlarının, dizlerini kalçalarının altına yerleştir.',
           },
+          imageUrl: 'assets/exercises/4-ayak-poz.png',
         ),
         ExerciseStep(
           titles: {'en': 'Right Side', 'tr': 'Sağ Taraf'},
@@ -331,6 +332,7 @@ class ExerciseData {
             'tr':
                 'Dört ayak pozisyonunda başla. Ellerini omuzlarının, dizlerini kalçalarının altına yerleştir. Sırtını düz tut.',
           },
+          imageUrl: 'assets/exercises/4-ayak-poz.png',
         ),
         ExerciseStep(
           titles: {'en': 'Right Arm - Left Leg', 'tr': 'Sağ Kol - Sol Bacak'},
@@ -450,18 +452,18 @@ class ExerciseData {
           titles: {'en': 'Starting Position', 'tr': 'Başlangıç Pozisyonu'},
           instructions: {
             'en':
-                'Stand with back against wall. Step feet one step away from wall. Bend arms in "W" shape, elbows and backs of hands touching wall.',
+                'Stand facing a wall. Place hands on the wall and lean forward slightly.',
             'tr':
-                'Bir duvara sırtını yasla. Ayaklarını duvardan bir adım öne al. Kollarını "W" şeklinde bük, dirsekler ve el sırtları duvara değsin.',
+                'Duvara dönük ayakta dur. Elleri duvara koy, göğsü öne yaklaştır.',
           },
         ),
         ExerciseStep(
           titles: {'en': 'Slide Up', 'tr': 'Yukarı Kaydırma'},
           instructions: {
             'en':
-                'Keeping elbows and hands in contact with wall, slowly slide arms upward ("Y" shape). Reach as high as possible. Then slowly return to starting position. Repeat 10-12 times.',
+                'Gently open the shoulders. Hold for 10 seconds and then slowly return to starting position. ',
             'tr':
-                'Dirseklerini ve ellerini duvardan ayırmadan kollarını yavaşça yukarıya doğru kaydır ("Y" şekli). Mümkün olduğunca yukarı çık. Sonra yavaşça başlangıç pozisyonuna dön. 10-12 kez tekrarla.',
+                'Omuzları yumuşakça aç. 10 sn tutup sonra yavaşça başlangıç pozisyonuna dön.',
           },
         ),
       ],
@@ -581,28 +583,17 @@ class ExerciseData {
             'tr': 'Başlangıç - Derin Çömelme',
           },
           instructions: {
-            'en':
-                'Place feet slightly wider than shoulder-width. Perform deep squat. Place elbows inside knees and gently push outward.',
-            'tr':
-                'Ayaklarını omuz genişliğinden biraz daha açık tut. Derin bir çömelme yap. Dirseklerini dizlerinin iç tarafına yerleştir ve hafifçe dışarı it.',
+            'en': 'Drop into a squat.',
+            'tr': 'Çömelme pozisyonu al.',
           },
         ),
         ExerciseStep(
-          titles: {'en': 'Right Arm Rotation', 'tr': 'Sağ Kol Rotasyonu'},
+          titles: {'en': 'Reach', 'tr': 'Uzanma'},
           instructions: {
             'en':
-                'While in squat position, place left hand on floor. Reach right arm toward ceiling and rotate torso to right. Open chest. Hold for 5 seconds, then return to start.',
+                'Stand up while reaching arms overhead. Return smoothly to squat. Repeat 10-15 times',
             'tr':
-                'Çömelme pozisyonunda kalırken sol elini yere koy. Sağ kolunu tavana doğru uzat ve gövdeni sağa doğru döndür. Göğsünü aç. 5 saniye tut, sonra başlangıç pozisyonuna dön.',
-          },
-        ),
-        ExerciseStep(
-          titles: {'en': 'Left Arm Rotation', 'tr': 'Sol Kol Rotasyonu'},
-          instructions: {
-            'en':
-                'While in squat position, place right hand on floor. Reach left arm toward ceiling and rotate torso to left. Open chest. Hold for 5 seconds, then return to start. Repeat both sides 6-8 times.',
-            'tr':
-                'Çömelme pozisyonunda kalırken sağ elini yere koy. Sol kolunu tavana doğru uzat ve gövdeni sola doğru döndür. Göğsünü aç. 5 saniye tut, sonra başlangıç pozisyonuna dön. Her iki tarafı 6-8 kez tekrarla.',
+                'Ayağa kalkarken kolları yukarı uzat. Akıcı şekilde tekrar çömel. 10-15 kez tekrarla.',
           },
         ),
       ],
