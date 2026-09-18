@@ -13,6 +13,8 @@ class ExerciseListTab extends StatelessWidget {
       Localizations.localeOf(context).languageCode,
     );
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body:
           exerciseProvider.isLoading
@@ -41,9 +43,18 @@ class ExerciseListTab extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Theme.of(context).cardColor,
                         borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color:
+                              isDark
+                                  ? const Color(0xFF334155)
+                                  : Colors.transparent,
+                          width: 1,
+                        ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.05),
+                            color: Colors.black.withValues(
+                              alpha: isDark ? 0.2 : 0.05,
+                            ),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -60,9 +71,10 @@ class ExerciseListTab extends StatelessWidget {
                           const SizedBox(height: 12),
                           Text(
                             category.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../core/theme/app_colors.dart';
 import '../models/exercise.dart';
 import '../providers/exercise_provider.dart';
 import '../core/constants/app_strings.dart';
@@ -10,40 +11,58 @@ class ExerciseDetailScreen extends StatelessWidget {
 
   const ExerciseDetailScreen({super.key, required this.exercise});
 
-  Widget _buildImage(String imageUrl, {BoxFit fit = BoxFit.cover}) {
+  Widget _buildImage(
+    String imageUrl, {
+    required bool isDark,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    final placeholderBg =
+        isDark ? AppColors.darkPlaceholder : AppColors.lightPlaceholder;
+    final placeholderIconColor = isDark ? AppColors.darkSubtext : Colors.grey;
+
     try {
       if (imageUrl.isEmpty) {
-        return _buildPlaceholder();
+        return _buildPlaceholder(placeholderBg, placeholderIconColor);
       }
 
       if (imageUrl.startsWith('http')) {
         return Image.network(
           imageUrl,
           fit: fit,
-          errorBuilder: (_, __, ___) => _buildPlaceholder(),
+          errorBuilder:
+              (_, __, ___) =>
+                  _buildPlaceholder(placeholderBg, placeholderIconColor),
         );
       } else {
         return Image.asset(
           imageUrl,
           fit: fit,
-          errorBuilder: (_, __, ___) => _buildPlaceholder(),
+          errorBuilder:
+              (_, __, ___) =>
+                  _buildPlaceholder(placeholderBg, placeholderIconColor),
         );
       }
     } catch (e) {
-      return _buildPlaceholder();
+      return _buildPlaceholder(placeholderBg, placeholderIconColor);
     }
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildPlaceholder(Color bgColor, Color iconColor) {
     return Container(
-      color: Colors.grey[200],
-      child: const Icon(Icons.fitness_center, size: 100, color: Colors.grey),
+      color: bgColor,
+      child: Center(
+        child: Icon(Icons.fitness_center, size: 80, color: iconColor),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final lang = Localizations.localeOf(context).languageCode;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bodyTextColor =
+        isDark ? AppColors.darkBodyText : AppColors.lightBodyText;
+    final subtextColor = isDark ? AppColors.darkSubtext : AppColors.lightSubtext;
 
     return Scaffold(
       body: CustomScrollView(
@@ -51,8 +70,31 @@ class ExerciseDetailScreen extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            leading: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                backgroundColor: isDark ? Colors.black54 : Colors.white70,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ),
             flexibleSpace: FlexibleSpaceBar(
-              background: _buildImage(exercise.imageUrl, fit: BoxFit.contain),
+              background: Container(
+                color:
+                    isDark
+                        ? AppColors.darkSurface
+                        : AppColors.lightPlaceholder,
+                child: _buildImage(
+                  exercise.imageUrl,
+                  isDark: isDark,
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             actions: [
               Consumer<ExerciseProvider>(
@@ -61,12 +103,21 @@ class ExerciseDetailScreen extends StatelessWidget {
                       provider.getExerciseById(exercise.id) ?? exercise;
                   final isFav = currentExercise.isFavorite;
 
-                  return IconButton(
-                    icon: Icon(
-                      isFav ? Icons.favorite : Icons.favorite_border,
-                      color: isFav ? Colors.red : Colors.white,
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      backgroundColor: isDark ? Colors.black54 : Colors.white70,
+                      child: IconButton(
+                        icon: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          color:
+                              isFav
+                                  ? Colors.red
+                                  : (isDark ? Colors.white : Colors.black87),
+                        ),
+                        onPressed: () => provider.toggleFavorite(exercise.id),
+                      ),
                     ),
-                    onPressed: () => provider.toggleFavorite(exercise.id),
                   );
                 },
               ),
@@ -85,7 +136,10 @@ class ExerciseDetailScreen extends StatelessWidget {
                         child: Text(
                           exercise.title(lang),
                           style: Theme.of(context).textTheme.headlineMedium
-                              ?.copyWith(fontWeight: FontWeight.bold),
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                         ),
                       ),
                       Container(
@@ -96,8 +150,14 @@ class ExerciseDetailScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(
                             context,
-                          ).primaryColor.withValues(alpha: 0.1),
+                          ).primaryColor.withValues(alpha: isDark ? 0.2 : 0.1),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.3),
+                            width: 1,
+                          ),
                         ),
                         child: Text(
                           exercise.difficulty(lang),
@@ -112,15 +172,19 @@ class ExerciseDetailScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     exercise.category(lang),
-                    style: TextStyle(color: Colors.grey[600], fontSize: 16),
+                    style: TextStyle(
+                      color: subtextColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     exercise.description(lang),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       height: 1.5,
-                      color: Colors.grey,
+                      color: bodyTextColor,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -130,12 +194,14 @@ class ExerciseDetailScreen extends StatelessWidget {
                         context,
                         Icons.timer_outlined,
                         exercise.formattedDuration,
+                        bodyTextColor,
                       ),
                       const SizedBox(width: 24),
                       _buildInfoTile(
                         context,
                         Icons.fitness_center,
                         '${exercise.muscleGroups(lang).length} ${AppStrings.get(context, 'muscle_groups')}',
+                        bodyTextColor,
                       ),
                     ],
                   ),
@@ -144,6 +210,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                     AppStrings.get(context, 'instructions'),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -177,18 +244,22 @@ class ExerciseDetailScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       step.title(lang),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       step.instruction(lang),
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 15,
                                         height: 1.4,
-                                        color: Colors.grey,
+                                        color: bodyTextColor,
                                       ),
                                     ),
                                   ],
@@ -200,11 +271,16 @@ class ExerciseDetailScreen extends StatelessWidget {
                             const SizedBox(height: 16),
                             ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: SizedBox(
+                              child: Container(
                                 width: double.infinity,
                                 height: 180,
+                                color:
+                                    isDark
+                                        ? AppColors.darkSurface
+                                        : AppColors.lightPlaceholder,
                                 child: _buildImage(
                                   step.imageUrl!,
+                                  isDark: isDark,
                                   fit: BoxFit.contain,
                                 ),
                               ),
@@ -213,24 +289,28 @@ class ExerciseDetailScreen extends StatelessWidget {
                         ],
                       ),
                     );
-                  }).toList(),
+                  }),
                   if (exercise.safetyTips(lang).isNotEmpty) ...[
                     const SizedBox(height: 8),
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.amber.withValues(alpha: 0.1),
+                        color: Colors.amber.withValues(
+                          alpha: isDark ? 0.15 : 0.1,
+                        ),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: Colors.amber.withValues(alpha: 0.3),
+                          color: Colors.amber.withValues(
+                            alpha: isDark ? 0.4 : 0.3,
+                          ),
                         ),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.warning_amber_rounded,
-                            color: Colors.amber,
+                            color: isDark ? Colors.amber[300] : Colors.amber,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -239,15 +319,24 @@ class ExerciseDetailScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   AppStrings.get(context, 'safety_tips'),
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.amber,
+                                    color:
+                                        isDark
+                                            ? Colors.amber[300]
+                                            : Colors.amber[900],
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   exercise.safetyTips(lang),
-                                  style: const TextStyle(fontSize: 14),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color:
+                                        isDark
+                                            ? Colors.amber[100]
+                                            : const Color(0xFF78350F),
+                                  ),
                                 ),
                               ],
                             ),
@@ -261,6 +350,7 @@ class ExerciseDetailScreen extends StatelessWidget {
                     AppStrings.get(context, 'muscle_groups'),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -272,13 +362,28 @@ class ExerciseDetailScreen extends StatelessWidget {
                             .muscleGroups(lang)
                             .map(
                               (muscle) => Chip(
-                                label: Text(muscle),
+                                label: Text(
+                                  muscle,
+                                  style: TextStyle(
+                                    color:
+                                        isDark
+                                            ? AppColors.darkBodyText
+                                            : AppColors.lightBodyText,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                                 backgroundColor:
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white12
-                                        : Colors.grey[100],
-                                side: BorderSide.none,
+                                    isDark
+                                        ? AppColors.darkSurface
+                                        : AppColors.lightPlaceholder,
+                                side: BorderSide(
+                                  color:
+                                      isDark
+                                          ? AppColors.darkBorder
+                                          : AppColors.lightBorder,
+                                  width: 1,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -311,12 +416,20 @@ class ExerciseDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoTile(BuildContext context, IconData icon, String label) {
+  Widget _buildInfoTile(
+    BuildContext context,
+    IconData icon,
+    String label,
+    Color textColor,
+  ) {
     return Row(
       children: [
         Icon(icon, size: 20, color: Theme.of(context).primaryColor),
         const SizedBox(width: 8),
-        Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.w500, color: textColor),
+        ),
       ],
     );
   }

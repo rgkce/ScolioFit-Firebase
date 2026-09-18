@@ -15,11 +15,21 @@ class CategoryExercisesScreen extends StatelessWidget {
     final exerciseProvider = context.watch<ExerciseProvider>();
     final exercises = exerciseProvider.getExercisesByCategory(category.id);
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(title: Text(category.name)),
       body:
           exercises.isEmpty
-              ? const Center(child: Text('No exercises found'))
+              ? Center(
+                child: Text(
+                  'No exercises found',
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFF94A3B8) : Colors.grey[600],
+                    fontSize: 16,
+                  ),
+                ),
+              )
               : ListView.builder(
                 padding: const EdgeInsets.all(24),
                 itemCount: exercises.length,

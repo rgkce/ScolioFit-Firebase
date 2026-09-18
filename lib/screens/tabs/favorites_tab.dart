@@ -12,6 +12,8 @@ class FavoritesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final exerciseProvider = context.watch<ExerciseProvider>();
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body:
           exerciseProvider.favorites.isEmpty
@@ -22,12 +24,17 @@ class FavoritesTab extends StatelessWidget {
                     Icon(
                       Icons.favorite_border,
                       size: 64,
-                      color: Colors.grey[400],
+                      color:
+                          isDark ? const Color(0xFF64748B) : Colors.grey[400],
                     ),
                     const SizedBox(height: 16),
                     Text(
                       AppStrings.get(context, 'no_favorites'),
-                      style: TextStyle(color: Colors.grey[600], fontSize: 18),
+                      style: TextStyle(
+                        color:
+                            isDark ? const Color(0xFF94A3B8) : Colors.grey[600],
+                        fontSize: 18,
+                      ),
                     ),
                   ],
                 ),

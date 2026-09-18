@@ -51,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -64,9 +66,16 @@ class _HomeScreenState extends State<HomeScreen> {
         body: IndexedStack(index: _selectedIndex, children: _tabs),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color:
+                    isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                width: 0.5,
+              ),
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, -5),
               ),
@@ -76,8 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
             currentIndex: _selectedIndex,
             onTap: (index) => setState(() => _selectedIndex = index),
             type: BottomNavigationBarType.fixed,
+            backgroundColor: Theme.of(context).cardColor,
             selectedItemColor: Theme.of(context).primaryColor,
-            unselectedItemColor: Colors.grey,
+            unselectedItemColor:
+                isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
             showSelectedLabels: true,
             showUnselectedLabels: true,
             items: [

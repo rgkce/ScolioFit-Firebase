@@ -15,6 +15,8 @@ class DailyRoutineTab extends StatelessWidget {
     final exerciseProvider = context.watch<ExerciseProvider>();
     final user = authProvider.user;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () => exerciseProvider.fetchDailyRoutine(forceRefresh: true),
@@ -28,14 +30,15 @@ class DailyRoutineTab extends StatelessWidget {
                 '${AppStrings.get(context, 'hello')}, ${user?.fullName ?? AppStrings.get(context, 'guest')} 👋',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 AppStrings.get(context, 'daily_routine_desc'),
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: isDark ? const Color(0xFF94A3B8) : Colors.grey[600],
+                ),
               ),
               const SizedBox(height: 32),
               if (exerciseProvider.isLoading)
@@ -44,13 +47,18 @@ class DailyRoutineTab extends StatelessWidget {
                 if (exerciseProvider.dailyRoutine.isNotEmpty) ...[
                   Row(
                     children: [
-                      const Icon(Icons.calendar_today, size: 20),
+                      Icon(
+                        Icons.calendar_today,
+                        size: 20,
+                        color: Theme.of(context).primaryColor,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         AppStrings.get(context, 'daily_plan'),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -78,13 +86,18 @@ class DailyRoutineTab extends StatelessWidget {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      const Icon(Icons.star_outline, size: 20),
+                      Icon(
+                        Icons.star_outline,
+                        size: 20,
+                        color: Theme.of(context).primaryColor,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         AppStrings.get(context, 'recommended_for_you'),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],
@@ -111,7 +124,19 @@ class DailyRoutineTab extends StatelessWidget {
                 if (exerciseProvider.dailyRoutine.isEmpty &&
                     exerciseProvider.recommendations.isEmpty)
                   Center(
-                    child: Text(AppStrings.get(context, 'no_exercises_today')),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 32),
+                      child: Text(
+                        AppStrings.get(context, 'no_exercises_today'),
+                        style: TextStyle(
+                          color:
+                              isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : Colors.grey[600],
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
                   ),
               ],
             ],
